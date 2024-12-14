@@ -1,0 +1,127 @@
+﻿  dllmain.cpp
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1136,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1158,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1159,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1171,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1182,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1206,9): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\PropertyAccess_structs.hpp(83,20): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\PropertyAccess_structs.hpp(147,20): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\PropertyAccess_structs.hpp(165,20): warning C4099: 'SDK::FArrayProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1133,7):
+      see declaration of 'SDK::FArrayProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(4017,2): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'src/dllmain.cpp')
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(4017,2): warning C4369: 'SDK::ESkinCacheUsage::ESkinCacheUsage_MAX':  enumerator value '256' cannot be represented as 'unsigned char', value is '256'
+  (compiling source file 'src/dllmain.cpp')
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(4512,2): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'src/dllmain.cpp')
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(4512,2): warning C4369: 'SDK::ESoundWaveLoadingBehavior::ESoundWaveLoadingBehavior_MAX':  enumerator value '256' cannot be represented as 'unsigned char', value is '256'
+  (compiling source file 'src/dllmain.cpp')
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(9277,20): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(9278,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(9279,27): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_structs.hpp(9920,20): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5181,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5183,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5185,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5187,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5189,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5191,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(5193,27): warning C4099: 'SDK::FStructProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1122,7):
+      see declaration of 'SDK::FStructProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(15554,20): warning C4099: 'SDK::FProperty': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1053,7):
+      see declaration of 'SDK::FProperty'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Engine_classes.hpp(21822,114): warning C4099: 'SDK::FField': type name first seen using 'class' now seen using 'struct'
+  (compiling source file 'src/dllmain.cpp')
+      C:\Users\josue\Documents\dev\FPS-trainer\src\game\SDK\Basic.hpp(1032,7):
+      see declaration of 'SDK::FField'
+  
+C:\Users\josue\Documents\dev\FPS-trainer\src\dllmain.cpp(16,3): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+  FPS-trainer.vcxproj -> C:\Users\josue\Documents\dev\FPS-trainer\x64\Debug\FPS-trainer.dll
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
