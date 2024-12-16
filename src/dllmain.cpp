@@ -37,44 +37,6 @@ void PostRenderHooked(SDK::UGameViewportClient *_this, SDK::UCanvas *canvas) {
   static float size = 50.0f;
   static float thickness = 1.0f;
 
-  if (!G::pWorld) {
-    U_LOG("GWORLD NULLPTR\n");
-    return;
-  }
-
-  if (!G::pWorld->OwningGameInstance) {
-    U_LOG("G::pWorld->OwningGameInstance\n");
-    return;
-  }
-
-  if (!G::pWorld->OwningGameInstance->LocalPlayers.IsValid()) {
-    U_LOG("G::pWorld->OwningGameInstance->LocalPlayers.IsValid()\n");
-    return;
-  }
-
-  G::pLocalPlayer =
-      G::pWorld->OwningGameInstance->LocalPlayers[0]->PlayerController;
-
-  if (!G::pWorld->PersistentLevel) {
-    U_LOG("G::pWorld->PersistentLevel\n");
-    return;
-  }
-
-  if (!G::pWorld->PersistentLevel->Actors.IsValid()) {
-    U_LOG("G::pWorld->PersistentLevel->Actors.IsValid()\n");
-    return;
-  }
-
-  G::pActors = G::pWorld->PersistentLevel->Actors;
-
-  if (!G::pLocalPlayer || !G::pActors || !G::pWorld ||
-      !G::pWorld->OwningGameInstance || !G::pWorld->PersistentLevel ||
-      !G::pWorld->PersistentLevel->bIsVisible) {
-    U_LOG("PostRenderHooked: Essential global pointers are nullptr or not "
-          "visible.\n");
-    return;
-  }
-
   /*  if (!actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass()))
   continue;
 
@@ -87,150 +49,164 @@ continue;
 if (!actor->IsA(SDK::ABP_ConquestCapturePoint_C::StaticClass()))
   continue;*/
 
-  for (const auto &actor : G::pActors) {
-    if (!G::pLocalPlayer)
-      continue;
+  if (G::pLevel != nullptr && G::pLocalPlayer != nullptr &&
+      G::pLocalPlayer->AcknowledgedPawn != nullptr && G::pActors != nullptr) {
 
-    if (!actor || !actor->RootComponent)
-      continue;
+    SDK::TArray<SDK::AActor *> actors = *G::pActors;
 
-    if (Config::Esp::Player::bEnabled) {
+    for (int i = 0; i < actors.Num(); i++) {
 
-      if (actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass())) {
+      if (!G::pLocalPlayer)
+        continue;
 
-        SDK::ABP_PlayerCharacter_C *playerCharacter =
-            static_cast<SDK::ABP_PlayerCharacter_C *>(actor);
+      auto *actor = actors[i];
 
-        auto uHealthComponent = playerCharacter->GetComponentByClass(
-            SDK::UBP_HealthComponent_C::StaticClass());
+      if (!actor || !actor->RootComponent)
+        continue;
 
-        if (!uHealthComponent)
-          continue;
+      if (Config::Esp::Player::bEnabled) {
 
-        auto healthComponent =
-            static_cast<SDK::UBP_HealthComponent_C *>(uHealthComponent);
+        if (actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass())) {
 
-        if (healthComponent->HP == 0)
-          continue;
+          SDK::ABP_PlayerCharacter_C *playerCharacter =
+              static_cast<SDK::ABP_PlayerCharacter_C *>(actor);
 
-        auto playerState =
-            static_cast<SDK::ABP_PlayerState_C *>(playerCharacter->PlayerState);
+          auto uHealthComponent = playerCharacter->GetComponentByClass(
+              SDK::UBP_HealthComponent_C::StaticClass());
 
-        if (!playerState)
-          continue;
+          if (!uHealthComponent)
+            continue;
 
-        if (playerCharacter->Controller->Pawn == G::pLocalPlayer->Pawn) {
-          localTeam = playerState->Team;
-          continue;
-        }
+          auto healthComponent =
+              static_cast<SDK::UBP_HealthComponent_C *>(uHealthComponent);
 
-        if (localTeam == playerState->Team && !Config::Esp::Player::bTeam)
-          continue;
+          if (healthComponent->HP == 0)
+            continue;
 
-        auto worldPos = actor->RootComponent->RelativeLocation;
+          auto playerState = static_cast<SDK::ABP_PlayerState_C *>(
+              playerCharacter->PlayerState);
 
-        if (worldPos.IsZero()) {
-          continue;
-        }
+          if (!playerState)
+            continue;
 
-        SDK::FVector2D screenPos;
-        bool bInScreen = G::pLocalPlayer->ProjectWorldLocationToScreen(
-            worldPos, &screenPos, false);
+          if (playerCharacter->Controller->Pawn == G::pLocalPlayer->Pawn) {
+            localTeam = playerState->Team;
+            continue;
+          }
 
-        if (!bInScreen) {
-          continue;
-        }
+          if (localTeam == playerState->Team && !Config::Esp::Player::bTeam)
+            continue;
 
-        if (Config::Esp::Player::bName)
-          canvas->K2_DrawText(pFont, playerState->PlayerNamePrivate,
-                              {screenPos.X, screenPos.Y + 50}, {1.f, 1.f},
-                              {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, {1.0f, 1.0f},
-                              {200, 200}, true, true, true,
-                              {0.0f, 0.0f, 0.0f, 0.5f});
+          auto worldPos = actor->RootComponent->RelativeLocation;
 
-        float distance =
-            SDK::UKismetMathLibrary::Vector_Distance(
-                G::pLocalPlayer->RootComponent->RelativeLocation, worldPos) /
-            1000.f;
+          if (worldPos.IsZero()) {
+            continue;
+          }
 
-        if (Config::Esp::Player::bDistance) {
+          SDK::FVector2D screenPos;
+          bool bInScreen = G::pLocalPlayer->ProjectWorldLocationToScreen(
+              worldPos, &screenPos, false);
 
-          std::string dist =
-              "[" + std::to_string(static_cast<int>(distance)) + "m]";
+          if (!bInScreen) {
+            continue;
+          }
 
-          canvas->K2_DrawText(pFont, Utils::ToWString(dist).c_str(),
-                              {screenPos.X + 33, screenPos.Y + 20},
-                              {0.8f, 0.8f}, {1.0f, 1.0f, 1.0f, 0.8f}, 0.0f,
-                              {1.0f, 1.0f}, {200, 200}, true, true, true,
-                              {0.0f, 0.0f, 0.0f, 0.5f});
-        }
+          if (Config::Esp::Player::bName)
+            canvas->K2_DrawText(pFont, playerState->PlayerNamePrivate,
+                                {screenPos.X, screenPos.Y + 50}, {1.f, 1.f},
+                                {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, {1.0f, 1.0f},
+                                {200, 200}, true, true, true,
+                                {0.0f, 0.0f, 0.0f, 0.5f});
 
-        const float baseBoxWidth = 100.0f;
-        const float baseBoxHeight = 200.0f;
+          auto delta = G::pLocalPlayer->AcknowledgedPawn->RootComponent
+                           ->RelativeLocation -
+                       worldPos;
 
-        float scale = 1.0f / distance;
+          float distance =
+              sqrt(powf(delta.X, 2) + powf(delta.Y, 2) + powf(delta.Z, 2)) /
+              1000.f;
 
-        float boxWidth = baseBoxWidth * scale;
-        float boxHeight = baseBoxHeight * scale;
+          if (Config::Esp::Player::bDistance) {
 
-        if (Config::Esp::Player::bBox) {
+            std::string dist =
+                "[" + std::to_string(static_cast<int>(distance)) + "m]";
 
-          SDK::FVector2D topLeft = {screenPos.X - boxWidth / 2,
-                                    screenPos.Y - boxHeight / 2};
-          SDK::FVector2D topRight = {screenPos.X + boxWidth / 2,
-                                     screenPos.Y - boxHeight / 2};
-          SDK::FVector2D bottomLeft = {screenPos.X - boxWidth / 2,
-                                       screenPos.Y + boxHeight / 2};
-          SDK::FVector2D bottomRight = {screenPos.X + boxWidth / 2,
-                                        screenPos.Y + boxHeight / 2};
+            canvas->K2_DrawText(pFont, Utils::ToWString(dist).c_str(),
+                                {screenPos.X + 35, screenPos.Y + 15},
+                                {0.8f, 0.8f}, {1.0f, 1.0f, 1.0f, 0.8f}, 0.0f,
+                                {1.0f, 1.0f}, {200, 200}, true, true, true,
+                                {0.0f, 0.0f, 0.0f, 0.5f});
+          }
 
-          // Top-left corner
-          canvas->K2_DrawLine(topLeft, {topLeft.X + 10, topLeft.Y}, 1.f,
-                              {1.f, 0.f, 0.f, 1.f});
-          canvas->K2_DrawLine(topLeft, {topLeft.X, topLeft.Y + 10}, 1.f,
-                              {1.f, 0.f, 0.f, 1.f});
+          const float baseBoxWidth = 100.0f;
+          const float baseBoxHeight = 200.0f;
 
-          // Top-right corner
-          canvas->K2_DrawLine(topRight, {topRight.X - 10, topRight.Y}, 1.f,
-                              {1.f, 0.f, 0.f, 1.f});
-          canvas->K2_DrawLine(topRight, {topRight.X, topRight.Y + 10}, 1.f,
-                              {1.f, 0.f, 0.f, 1.f});
+          float scale = 1.0f / distance;
 
-          // Bottom-left corner
-          canvas->K2_DrawLine(bottomLeft, {bottomLeft.X + 10, bottomLeft.Y},
-                              1.f, {1.f, 0.f, 0.f, 1.f});
-          canvas->K2_DrawLine(bottomLeft, {bottomLeft.X, bottomLeft.Y - 10},
-                              1.f, {1.f, 0.f, 0.f, 1.f});
+          float boxWidth = baseBoxWidth * scale;
+          float boxHeight = baseBoxHeight * scale;
 
-          // Bottom-right corner
-          canvas->K2_DrawLine(bottomRight, {bottomRight.X - 10, bottomRight.Y},
-                              1.f, {1.f, 0.f, 0.f, 1.f});
-          canvas->K2_DrawLine(bottomRight, {bottomRight.X, bottomRight.Y - 10},
-                              1.f, {1.f, 0.f, 0.f, 1.f});
-        }
+          if (Config::Esp::Player::bBox) {
 
-        if (Config::Esp::Player::bHealthBar) {
+            SDK::FVector2D topLeft = {screenPos.X - boxWidth / 2,
+                                      screenPos.Y - boxHeight / 2};
+            SDK::FVector2D topRight = {screenPos.X + boxWidth / 2,
+                                       screenPos.Y - boxHeight / 2};
+            SDK::FVector2D bottomLeft = {screenPos.X - boxWidth / 2,
+                                         screenPos.Y + boxHeight / 2};
+            SDK::FVector2D bottomRight = {screenPos.X + boxWidth / 2,
+                                          screenPos.Y + boxHeight / 2};
 
-          float healthBarWidth = 40.f;
-          float healthBarHeight = 5.f;
+            // Top-left corner
+            canvas->K2_DrawLine(topLeft, {topLeft.X + 10, topLeft.Y}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
+            canvas->K2_DrawLine(topLeft, {topLeft.X, topLeft.Y + 10}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
 
-          SDK::FVector2D healthBarPos = {screenPos.X - healthBarWidth / 2,
-                                         screenPos.Y + boxHeight / 2 + 5};
+            // Top-right corner
+            canvas->K2_DrawLine(topRight, {topRight.X - 10, topRight.Y}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
+            canvas->K2_DrawLine(topRight, {topRight.X, topRight.Y + 10}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
 
-          ZeroGUI::drawFilledRect(healthBarPos, healthBarWidth, healthBarHeight,
-                                  {0.f, 0.f, 0.f, 0.8f});
+            // Bottom-left corner
+            canvas->K2_DrawLine(bottomLeft, {bottomLeft.X + 10, bottomLeft.Y},
+                                1.f, {1.f, 0.f, 0.f, 1.f});
+            canvas->K2_DrawLine(bottomLeft, {bottomLeft.X, bottomLeft.Y - 10},
+                                1.f, {1.f, 0.f, 0.f, 1.f});
 
-          float healthFillWidth =
-              healthBarWidth * (healthComponent->HP / healthComponent->MaxHP);
+            // Bottom-right corner
+            canvas->K2_DrawLine(bottomRight,
+                                {bottomRight.X - 10, bottomRight.Y}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
+            canvas->K2_DrawLine(bottomRight,
+                                {bottomRight.X, bottomRight.Y - 10}, 1.f,
+                                {1.f, 0.f, 0.f, 1.f});
+          }
 
-          ZeroGUI::drawFilledRect(healthBarPos, healthFillWidth,
-                                  healthBarHeight, {0.f, 1.f, 0.f, 0.8f});
-        }
+          if (Config::Esp::Player::bHealthBar) {
 
-        if (Config::Esp::Player::bSnaplines) {
+            float healthBarWidth = 40.f;
+            float healthBarHeight = 5.f;
 
-          canvas->K2_DrawLine({static_cast<float>(sSize.width / 2), 0},
-                              screenPos, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f});
+            SDK::FVector2D healthBarPos = {screenPos.X - healthBarWidth / 2,
+                                           screenPos.Y + boxHeight / 2 + 5};
+
+            ZeroGUI::drawFilledRect(healthBarPos, healthBarWidth,
+                                    healthBarHeight, {0.f, 0.f, 0.f, 0.8f});
+
+            float healthFillWidth =
+                healthBarWidth * (healthComponent->HP / healthComponent->MaxHP);
+
+            ZeroGUI::drawFilledRect(healthBarPos, healthFillWidth,
+                                    healthBarHeight, {0.f, 1.f, 0.f, 0.8f});
+          }
+
+          if (Config::Esp::Player::bSnaplines) {
+
+            canvas->K2_DrawLine({static_cast<float>(sSize.width / 2), 0},
+                                screenPos, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f});
+          }
         }
       }
     }
@@ -247,7 +223,7 @@ static unsigned long FakEntry(HMODULE hModule) {
   FILE *pFile{nullptr};
   freopen_s(&pFile, "CONOUT$", "w", __acrt_iob_func(1));
 
-  U_LOG("[ANGOLA_HOOK] injected %s\n", Utils::GetWndowTitle().c_str());
+  U_LOG("[ANGOLA_HOOK] injected %s ", Utils::GetWndowTitle().c_str());
   uintptr_t moduleBase = (uintptr_t)GetModuleHandle(0);
 
   auto UWorld = Memory::FindPattern((BYTE *)G::Offsets::GWORLD_SIG.signature,
@@ -274,13 +250,32 @@ static unsigned long FakEntry(HMODULE hModule) {
           Memory::VMT_Hook(viewportVtable, G::Offsets::PR_IDX_OFFSET,
                            &PostRenderHooked));
 
-  U_LOG("[%p] GWorld \n", UWorld);
-  U_LOG("[%p] UGameViewportClient->DrawTransition()\n",
+  U_LOG("[%p] GWorld", UWorld);
+  U_LOG("[%p] UGameViewportClient->DrawTransition()",
         Defines::originalPostRenderFn);
 
-  G::pWorld = pWorld;
-
   while (!GetAsyncKeyState(VK_END)) {
+
+    G::pWorld = SDK::UWorld::GetWorld();
+
+    if (G::pWorld == nullptr)
+      continue;
+
+    if (G::pWorld->PersistentLevel == nullptr)
+      continue;
+
+    G::pLevel = G::pWorld->PersistentLevel;
+
+    if (G::pWorld->OwningGameInstance == nullptr)
+      continue;
+
+    G::pLocalPlayer =
+        G::pWorld->OwningGameInstance->LocalPlayers[0]->PlayerController;
+
+    if (G::pLocalPlayer == nullptr)
+      continue;
+
+    G::pActors = &G::pLevel->Actors;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }

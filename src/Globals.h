@@ -5,13 +5,13 @@ struct CPattern {
   const char *mask;
 };
 
-
 namespace G {
 
 inline SDK::APlayerController *pLocalPlayer = nullptr;
-inline SDK::TArray<SDK::AActor *> pActors;
+inline SDK::TArray<SDK::AActor *> *pActors = nullptr;
 inline SDK::UWorld *pWorld = nullptr;
 inline SDK::UEngine *pEngine = nullptr;
+inline SDK::ULevel *pLevel= nullptr;
 
 namespace Offsets {
 

@@ -308,7 +308,7 @@ namespace UC
 
 		inline bool IsValidIndex(int32 Index) const { return Data && Index >= 0 && Index < NumElements; }
 
-		inline bool IsValid() const { return Data && NumElements > 0 && MaxElements >= NumElements; }
+		inline bool IsValid() const { return this&& Data && NumElements > 0 && MaxElements >= NumElements; }
 
 	public:
 		inline       ArrayElementType& operator[](int32 Index)       { VerifyIndex(Index); return Data[Index]; }

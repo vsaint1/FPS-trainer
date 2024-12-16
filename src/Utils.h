@@ -5,11 +5,13 @@
 #include <fstream>
 #include <iostream>
 #include <shlobj.h>
-#include <thread>
 #include <sstream>
+#include <thread>
 
 #if _DEBUG
-#define U_LOG(fmt, ...) printf(fmt, __VA_ARGS__)
+#include <stdio.h>
+#define U_LOG(fmt, ...)                                                        \
+  printf("%s:%d: " fmt "\n", __FILE__, __LINE__, __VA_ARGS__)
 #else
 #define U_LOG(fmt, ...)
 #endif
@@ -37,7 +39,6 @@ inline SDK::UFont *pFont =
 #define STATIC_ASSERT(...) static_assert(__VA_ARGS__)
 #endif
 
-
 namespace Utils_Globals {
 inline std::string windowTitle = "Unknown";
 
@@ -58,7 +59,6 @@ inline BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
   }
   return TRUE;
 };
-
 
 namespace std {
 template <> struct hash<SDK::FName> {
@@ -151,4 +151,3 @@ inline void ListAvailableFonts() {
 }
 
 } // namespace Utils
-
