@@ -155,18 +155,18 @@ if (!actor->IsA(SDK::ABP_ConquestCapturePoint_C::StaticClass()))
 
         if (Config::Esp::Player::bDistance) {
 
-          std::string dist = "[" + std::to_string(distance) + "]";
+          std::string dist = "[" + std::to_string(static_cast<int>(distance)) + "]";
 
           canvas->K2_DrawText(pFont, Utils::ToWString(dist).c_str(),
-                              {screenPos.X + 45, screenPos.Y + 20},
+                              {screenPos.X + 50, screenPos.Y + 20},
                               {0.8f, 0.8f}, {1.0f, 1.0f, 1.0f, 0.8f}, 0.0f,
                               {1.0f, 1.0f}, {200, 200}, true, true, true,
                               {0.0f, 0.0f, 0.0f, 0.5f});
         }
 
         const float baseBoxWidth = 100.0f;
-        const float baseBoxHeight = 250.0f;
-        const float referenceDistance = 2.0f;
+        const float baseBoxHeight = 200.0f;
+        const float referenceDistance = 1.0f;
 
         float scale = referenceDistance / distance;
 

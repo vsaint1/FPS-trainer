@@ -938,6 +938,7 @@
     <ClInclude Include="src\gui\ZeroInput.h" />
     <ClInclude Include="src\hooks\Hooks.h" />
     <ClInclude Include="src\mem\Memory.h" />
+    <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\Utils.h" />
   </ItemGroup>
   <ItemGroup>
