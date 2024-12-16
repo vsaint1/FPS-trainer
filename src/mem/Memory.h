@@ -12,7 +12,7 @@ template <typename T> void Write(uintptr_t address, const T &value) {
 uintptr_t ResolveAddress(uintptr_t baseAddress,
                          const std::vector<uintptr_t> &offsets);
 
-inline char *VMT_Hook(void **vtable, uint32_t index, void *targetFunction) {
+inline char *VMT_Hook(void **vtable, std::int32_t index, void *targetFunction) {
 
   char *original = reinterpret_cast<char *>(vtable[index]);
 
@@ -28,7 +28,7 @@ inline char *VMT_Hook(void **vtable, uint32_t index, void *targetFunction) {
   return original;
 }
 
-inline bool _Mask(BYTE *address, PBYTE signature, const char *mask) {
+inline bool _MASK(BYTE *address, PBYTE signature, const char *mask) {
   for (; *mask; ++mask, ++address, ++signature) {
     if (*mask == 'x' && *address != *signature)
       return false;
@@ -56,15 +56,13 @@ inline PBYTE FindPattern(BYTE *signature, const char *mask,
   size_t length = strlen(mask);
 
   for (size_t i = 0; i < dwSize - length; i++) {
-    if (_Mask(baseAddress + i, signature, mask)) {
+    if (_MASK(baseAddress + i, signature, mask)) {
       BYTE *matchAddress = baseAddress + i;
 
-      std::int32_t relativeAddress =
+      const std::int32_t relativeAddress =
           *(std::int32_t *)(matchAddress + instructionSize);
 
-      U_LOG("[%p] RELATIVE_OFFSET\n", relativeOffset);
-
-      BYTE *address = matchAddress + relativeAddress +relativeOffset;
+      BYTE *address = matchAddress + relativeAddress + relativeOffset;
 
       return address;
     }

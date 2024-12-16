@@ -1,25 +1,15 @@
 #include "Hooks.h"
 
-
-
 namespace Hooks {
 
-bool Initialize() {
 
+bool Remove(void **vfTable, std::int32_t index, void *originalFn) {
 
-  return true;
-}
-
-
-
-bool RemoveHook(void *pTarget) {
+  vfTable[index] = originalFn;
+  originalFn = nullptr;
 
   return true;
 }
 
-bool Shutdown() {
-
-  return true;
-}
 
 } // namespace Hooks
