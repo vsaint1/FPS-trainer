@@ -67,16 +67,25 @@ void Update() {
 
     if (tab == 1) {
       static int test_number = 0;
-      ZeroGUI::Text("Player", false, true);
-      ZeroGUI::Checkbox("Enabled", &Config::Esp::Player::bEnabled);
-      ZeroGUI::Checkbox("Box", &Config::Esp::Player::bBox);
+      ZeroGUI::Text("ESP", false, true);
+      ZeroGUI::Checkbox("Enabled", &Config::Visual::Player::bEnabled);
+      ZeroGUI::Checkbox("Box", &Config::Visual::Player::bBox);
       ZeroGUI::Combobox("Type", SDK::FVector2D{100, 25}, &test_number, "Corner",
                         "3D", "2D", NULL);
-      ZeroGUI::Checkbox("Healthbar", &Config::Esp::Player::bHealthBar);
-      ZeroGUI::Checkbox("Team", &Config::Esp::Player::bTeam);
-      ZeroGUI::Checkbox("Names", &Config::Esp::Player::bName);
-      ZeroGUI::Checkbox("Snaplines", &Config::Esp::Player::bSnaplines);
-      ZeroGUI::Checkbox("Distance", &Config::Esp::Player::bDistance);
+      ZeroGUI::Checkbox("Healthbar", &Config::Visual::Player::bHealthBar);
+      ZeroGUI::Checkbox("Team", &Config::Visual::Player::bTeam);
+      ZeroGUI::Checkbox("Names", &Config::Visual::Player::bName);
+      ZeroGUI::Checkbox("Snaplines", &Config::Visual::Player::bSnaplines);
+      ZeroGUI::Checkbox("Distance", &Config::Visual::Player::bDistance);
+      ZeroGUI::Checkbox("Skeleton", &Config::Visual::Player::bSkeleton);
+
+      ZeroGUI::NextColumn(280.f);
+      ZeroGUI::Text("Chams", false, true);
+      ZeroGUI::Checkbox("Enabled", &Config::Visual::Player::bChamsEnabled);
+      ZeroGUI::Checkbox("Player Chams", &Config::Visual::Player::bPlayerChams);
+      ZeroGUI::Checkbox("Weapon Chams", &Config::Visual::Player::bWeaponChams);
+      //ZeroGUI::Checkbox("Grenade Chams", &Config::Visual::Player::bSkeleton);
+
     }
 
     ZeroGUI::NextColumn(130.0f);
@@ -89,7 +98,15 @@ void Update() {
     ZeroGUI::NextColumn(130.0f);
 
     if (tab == 3) {
-      ZeroGUI::Text("Memefn2");
+      ZeroGUI::Text("Exploits");
+      ZeroGUI::Checkbox("God", &Config::Exploit::bGod);
+      ZeroGUI::Checkbox("Fly", &Config::Exploit::bFly);
+      ZeroGUI::Checkbox("Infinite Ammo", &Config::Exploit::bInfiniteAmmo);
+      ZeroGUI::Checkbox("No Spread", &Config::Exploit::bNoSpread);
+      ZeroGUI::Checkbox("No Recoil", &Config::Exploit::bNoRecoil);
+      ZeroGUI::Checkbox("One Hit Kill", &Config::Exploit::bOneHitKill);
+      ZeroGUI::Checkbox("Rapid Fire", &Config::Exploit::bRapidFire);
+      ZeroGUI::Checkbox("Speed Hack", &Config::Exploit::bSpeedHack);
     }
 
     ZeroGUI::NextColumn(130.0f);

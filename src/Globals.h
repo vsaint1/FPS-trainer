@@ -12,6 +12,7 @@ inline SDK::TArray<SDK::AActor *> *pActors = nullptr;
 inline SDK::UWorld *pWorld = nullptr;
 inline SDK::UEngine *pEngine = nullptr;
 inline SDK::ULevel *pLevel= nullptr;
+inline int32_t localPlayerTeam = 0;
 
 namespace Offsets {
 

@@ -1,4 +1,5 @@
-#include "Utils.h"
+#include "cheat/esp/Esp.h"
+#include "cheat/esp/chams.h"
 #include "game/SDK/BP_BaseWeapon_classes.hpp"
 #include "game/SDK/BP_CaptureTheFlag_GM_classes.hpp"
 #include "game/SDK/BP_ConquestCapturePoint_classes.hpp"
@@ -8,8 +9,6 @@
 #include "game/SDK/BP_PlayerState_classes.hpp"
 #include "gui/Menu.h"
 #include "hooks/Hooks.h"
-
-int localTeam = 0;
 
 void PostRenderHooked(SDK::UGameViewportClient *_this, SDK::UCanvas *canvas) {
   if (!_this || !canvas) {
@@ -64,149 +63,188 @@ if (!actor->IsA(SDK::ABP_ConquestCapturePoint_C::StaticClass()))
       if (!actor || !actor->RootComponent)
         continue;
 
-      if (Config::Esp::Player::bEnabled) {
+      if (actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass())) {
 
-        if (actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass())) {
+        SDK::ABP_PlayerCharacter_C *playerCharacter =
+            static_cast<SDK::ABP_PlayerCharacter_C *>(actor);
 
-          SDK::ABP_PlayerCharacter_C *playerCharacter =
-              static_cast<SDK::ABP_PlayerCharacter_C *>(actor);
+        auto uHealthComponent = playerCharacter->GetComponentByClass(
+            SDK::UBP_HealthComponent_C::StaticClass());
 
-          auto uHealthComponent = playerCharacter->GetComponentByClass(
-              SDK::UBP_HealthComponent_C::StaticClass());
+        if (!uHealthComponent)
+          continue;
 
-          if (!uHealthComponent)
-            continue;
+        auto healthComponent =
+            static_cast<SDK::UBP_HealthComponent_C *>(uHealthComponent);
 
-          auto healthComponent =
-              static_cast<SDK::UBP_HealthComponent_C *>(uHealthComponent);
+        if (healthComponent->HP == 0)
+          continue;
 
-          if (healthComponent->HP == 0)
-            continue;
+        auto playerState =
+            static_cast<SDK::ABP_PlayerState_C *>(playerCharacter->PlayerState);
 
-          auto playerState = static_cast<SDK::ABP_PlayerState_C *>(
-              playerCharacter->PlayerState);
+        if (!playerState)
+          continue;
 
-          if (!playerState)
-            continue;
+        if (playerCharacter->Controller == nullptr)
+          continue;
 
-          if (playerCharacter->Controller->Pawn == G::pLocalPlayer->Pawn) {
-            localTeam = playerState->Team;
-            continue;
+        if (playerCharacter->Controller->Pawn == G::pLocalPlayer->Pawn) {
+
+          G::localPlayerTeam = playerState->Team;
+
+          if (Config::Exploit::bRapidFire) {
+
+            playerCharacter->CurrentWeapon->FireRate = 0.0010f;
           }
 
-          if (localTeam == playerState->Team && !Config::Esp::Player::bTeam)
-            continue;
-
-          auto worldPos = actor->RootComponent->RelativeLocation;
-
-          if (worldPos.IsZero()) {
-            continue;
+          if (Config::Exploit::bSpeedHack) {
+            G::pLocalPlayer->Character->CharacterMovement->MaxAcceleration =
+                9999.f;
+            G::pLocalPlayer->Character->CharacterMovement->MaxWalkSpeed =
+                1500.0f;
           }
 
-          SDK::FVector2D screenPos;
-          bool bInScreen = G::pLocalPlayer->ProjectWorldLocationToScreen(
-              worldPos, &screenPos, false);
+          if (Config::Exploit::bGod) {
 
-          if (!bInScreen) {
-            continue;
+            healthComponent->MaxHP = 1337.0f;
+            healthComponent->HP = 1337.0f;
           }
 
-          if (Config::Esp::Player::bName)
-            canvas->K2_DrawText(pFont, playerState->PlayerNamePrivate,
-                                {screenPos.X, screenPos.Y + 50}, {1.f, 1.f},
-                                {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, {1.0f, 1.0f},
-                                {200, 200}, true, true, true,
-                                {0.0f, 0.0f, 0.0f, 0.5f});
+          if (Config::Exploit::bFly) {
 
-          auto delta = G::pLocalPlayer->AcknowledgedPawn->RootComponent
-                           ->RelativeLocation -
-                       worldPos;
-
-          float distance =
-              sqrt(powf(delta.X, 2) + powf(delta.Y, 2) + powf(delta.Z, 2)) /
-              1000.f;
-
-          if (Config::Esp::Player::bDistance) {
-
-            std::string dist =
-                "[" + std::to_string(static_cast<int>(distance)) + "m]";
-
-            canvas->K2_DrawText(pFont, Utils::ToWString(dist).c_str(),
-                                {screenPos.X + 35, screenPos.Y + 15},
-                                {0.8f, 0.8f}, {1.0f, 1.0f, 1.0f, 0.8f}, 0.0f,
-                                {1.0f, 1.0f}, {200, 200}, true, true, true,
-                                {0.0f, 0.0f, 0.0f, 0.5f});
+            playerCharacter->ClientCheatFly();
           }
 
-          const float baseBoxWidth = 100.0f;
-          const float baseBoxHeight = 200.0f;
+          if (Config::Exploit::bInfiniteAmmo) {
 
-          float scale = 1.0f / distance;
-
-          float boxWidth = baseBoxWidth * scale;
-          float boxHeight = baseBoxHeight * scale;
-
-          if (Config::Esp::Player::bBox) {
-
-            SDK::FVector2D topLeft = {screenPos.X - boxWidth / 2,
-                                      screenPos.Y - boxHeight / 2};
-            SDK::FVector2D topRight = {screenPos.X + boxWidth / 2,
-                                       screenPos.Y - boxHeight / 2};
-            SDK::FVector2D bottomLeft = {screenPos.X - boxWidth / 2,
-                                         screenPos.Y + boxHeight / 2};
-            SDK::FVector2D bottomRight = {screenPos.X + boxWidth / 2,
-                                          screenPos.Y + boxHeight / 2};
-
-            // Top-left corner
-            canvas->K2_DrawLine(topLeft, {topLeft.X + 10, topLeft.Y}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
-            canvas->K2_DrawLine(topLeft, {topLeft.X, topLeft.Y + 10}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
-
-            // Top-right corner
-            canvas->K2_DrawLine(topRight, {topRight.X - 10, topRight.Y}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
-            canvas->K2_DrawLine(topRight, {topRight.X, topRight.Y + 10}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
-
-            // Bottom-left corner
-            canvas->K2_DrawLine(bottomLeft, {bottomLeft.X + 10, bottomLeft.Y},
-                                1.f, {1.f, 0.f, 0.f, 1.f});
-            canvas->K2_DrawLine(bottomLeft, {bottomLeft.X, bottomLeft.Y - 10},
-                                1.f, {1.f, 0.f, 0.f, 1.f});
-
-            // Bottom-right corner
-            canvas->K2_DrawLine(bottomRight,
-                                {bottomRight.X - 10, bottomRight.Y}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
-            canvas->K2_DrawLine(bottomRight,
-                                {bottomRight.X, bottomRight.Y - 10}, 1.f,
-                                {1.f, 0.f, 0.f, 1.f});
+            playerCharacter->CurrentWeapon->AmmoPerMag = 100;
+            playerCharacter->CurrentWeapon->ActualAmmo = 999;
           }
 
-          if (Config::Esp::Player::bHealthBar) {
-
-            float healthBarWidth = 40.f;
-            float healthBarHeight = 5.f;
-
-            SDK::FVector2D healthBarPos = {screenPos.X - healthBarWidth / 2,
-                                           screenPos.Y + boxHeight / 2 + 5};
-
-            ZeroGUI::drawFilledRect(healthBarPos, healthBarWidth,
-                                    healthBarHeight, {0.f, 0.f, 0.f, 0.8f});
-
-            float healthFillWidth =
-                healthBarWidth * (healthComponent->HP / healthComponent->MaxHP);
-
-            ZeroGUI::drawFilledRect(healthBarPos, healthFillWidth,
-                                    healthBarHeight, {0.f, 1.f, 0.f, 0.8f});
+          if (Config::Exploit::bOneHitKill) {
+            playerCharacter->CurrentWeapon->Damage = 100;
           }
 
-          if (Config::Esp::Player::bSnaplines) {
+          if (Config::Exploit::bNoRecoil) {
 
-            canvas->K2_DrawLine({static_cast<float>(sSize.width / 2), 0},
-                                screenPos, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f});
+            playerCharacter->CurrentWeapon->WeaponHorizontalRecoilMax = 0;
+            playerCharacter->CurrentWeapon->WeaponHorizontalRecoilMin = 0;
+            playerCharacter->CurrentWeapon->WeaponVerticalRecoilMax = 0;
+            playerCharacter->CurrentWeapon->WeaponVerticalRecoilMin = 0;
           }
+
+          if (Config::Exploit::bNoSpread) {
+            playerCharacter->CurrentWeapon->AimingSpread = 0;
+            playerCharacter->CurrentWeapon->WeaponSpread = 0;
+          }
+
+          continue;
+        }
+
+        if (G::localPlayerTeam == playerState->Team &&
+            !Config::Visual::Player::bTeam)
+          continue;
+
+        auto worldPos = actor->RootComponent->RelativeLocation;
+
+        if (worldPos.IsZero()) {
+          continue;
+        }
+
+        SDK::FVector2D screenPos;
+        bool bInScreen = G::pLocalPlayer->ProjectWorldLocationToScreen(
+            worldPos, &screenPos, false);
+
+        if (!bInScreen) {
+          continue;
+        }
+
+        auto localPlayerPov =
+            G::pLocalPlayer->PlayerCameraManager->CameraCache.POV.Location;
+        bool bVisible = G::pLocalPlayer->LineOfSightTo(playerCharacter,
+                                                       localPlayerPov, false);
+
+        if (Config::Visual::Player::bSkeleton) {
+
+          Esp::DrawSkeleton(playerCharacter, canvas, bVisible);
+        }
+
+        if (Config::Visual::Player::bPlayerChams) {
+
+          Chams::ApplyChams(playerCharacter->Mesh, Chams::chamsMaterial,
+                            {0.0f, 1.0f, 0.0f, 0.6f}, {1.f, 0.0f, 0.0f, 0.6f},
+                            bVisible);
+        }
+
+        if (Config::Visual::Player::bWeaponChams) {
+        }
+
+        auto delta =
+            G::pLocalPlayer->AcknowledgedPawn->RootComponent->RelativeLocation -
+            worldPos;
+
+        float distance =
+            sqrt(powf(delta.X, 2) + powf(delta.Y, 2) + powf(delta.Z, 2)) /
+            1000.f;
+
+        if (Config::Visual::Player::bDistance) {
+
+          std::string dist =
+              "[" + std::to_string(static_cast<int>(distance)) + "m]";
+
+          Esp::DrawDistance(Utils::ToWString(dist).c_str(), canvas,
+                            {screenPos.X + 35, screenPos.Y + 15});
+        }
+        const float baseBoxWidth = 100.0f;
+        const float baseBoxHeight = 200.0f;
+
+        float scale = 1.0f / distance;
+
+        float boxWidth = baseBoxWidth * scale;
+        float boxHeight = baseBoxHeight * scale;
+
+        if (Config::Visual::Player::bBox) {
+
+          Esp::DrawBoxCorner(canvas, screenPos, boxWidth, boxHeight);
+        }
+
+        if (Config::Visual::Player::bName) {
+          float offset = 15.f;
+
+          SDK::FVector2D namePos = {screenPos.X - boxWidth / 2 + offset,
+                                    screenPos.Y - boxHeight / 2 - offset};
+
+          auto name = !playerState->Name_0 ? L"UKNOWN" : playerState->Name_0;
+
+          canvas->K2_DrawText(pFont, name, namePos, {1.f, 1.f},
+                              {1.0f, 1.0f, 1.0f, 0.75f}, 0.0f, {1.0f, 1.0f},
+                              {200, 200}, true, true, true,
+                              {0.0f, 0.0f, 0.0f, 0.5f});
+        }
+
+        if (Config::Visual::Player::bHealthBar) {
+
+          float healthBarWidth = 40.f;
+          float healthBarHeight = 5.f;
+
+          SDK::FVector2D healthBarPos = {screenPos.X - healthBarWidth / 2,
+                                         screenPos.Y + boxHeight / 2 + 5};
+
+          ZeroGUI::drawFilledRect(healthBarPos, healthBarWidth, healthBarHeight,
+                                  {0.f, 0.f, 0.f, 0.8f});
+
+          float healthFillWidth =
+              healthBarWidth * (healthComponent->HP / healthComponent->MaxHP);
+
+          ZeroGUI::drawFilledRect(healthBarPos, healthFillWidth,
+                                  healthBarHeight, {0.f, 1.f, 0.f, 0.8f});
+        }
+
+        if (Config::Visual::Player::bSnaplines) {
+
+          canvas->K2_DrawLine({static_cast<float>(sSize.width / 2), 0},
+                              screenPos, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f});
         }
       }
     }
@@ -254,6 +292,38 @@ static unsigned long FakEntry(HMODULE hModule) {
   U_LOG("[%p] UGameViewportClient->DrawTransition()",
         Defines::originalPostRenderFn);
 
+  Chams::wireFrameMaterial = SDK::UObject::FindObject<SDK::UMaterial>(
+      "Material WireframeMaterial.WireframeMaterial");
+
+  if (Chams::wireFrameMaterial) {
+
+    Chams::wireFrameMaterial->bDisableDepthTest = 1;
+    Chams::wireFrameMaterial->Wireframe = 1;
+    Chams::wireFrameMaterial->BlendMode = SDK::EBlendMode::BLEND_Additive;
+    Chams::wireFrameMaterial->MaterialDomain = SDK::EMaterialDomain::MD_Surface;
+    Chams::wireFrameMaterial->AllowTranslucentCustomDepthWrites = 1;
+    Chams::wireFrameMaterial->bIsBlendable = 1;
+    Chams::wireFrameMaterial->LightmassSettings.EmissiveBoost = 1.0f;
+    Chams::wireFrameMaterial->LightmassSettings.DiffuseBoost = 0;
+  }
+
+  Chams::chamsMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          pWorld, Chams::wireFrameMaterial, Utils::ToFName(L"ChamsMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+
+  Chams::chamsVisibleMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          pWorld, Chams::wireFrameMaterial,
+          Utils::ToFName(L"ChamsVisibleMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+
+  Chams::chamsOccludedMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          pWorld, Chams::wireFrameMaterial,
+          Utils::ToFName(L"ChamsOccludedMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+
   while (!GetAsyncKeyState(VK_END)) {
 
     G::pWorld = SDK::UWorld::GetWorld();
@@ -280,10 +350,7 @@ static unsigned long FakEntry(HMODULE hModule) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
-  // Hooks::Remove(viewportVtable, G::Offsets::PR_IDX_OFFSET,
-  //               Defines::originalPostRenderFn);
-
-  viewportVtable[0x63] = Defines::originalPostRenderFn;
+  viewportVtable[G::Offsets::PR_IDX_OFFSET] = Defines::originalPostRenderFn;
   Defines::originalPostRenderFn = nullptr;
 
   FreeConsole();

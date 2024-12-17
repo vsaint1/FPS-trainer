@@ -585,6 +585,12 @@
     <ClCompile Include="src\gui\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cheat\esp\Esp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cheat\esp\Chams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils.h">
@@ -2382,6 +2388,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cheat\esp\Esp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cheat\esp\Chams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -149,6 +149,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cheat\esp\Chams.cpp" />
+    <ClCompile Include="src\cheat\esp\Esp.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\game\SDK\ABP_Base_TPP_functions.cpp" />
     <ClCompile Include="src\game\SDK\ABP_FPP_Base_functions.cpp" />
@@ -341,6 +343,8 @@
     <ClCompile Include="src\mem\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cheat\esp\Chams.h" />
+    <ClInclude Include="src\cheat\esp\Esp.h" />
     <ClInclude Include="src\game\PropertyFixup.hpp" />
     <ClInclude Include="src\game\SDK.hpp" />
     <ClInclude Include="src\game\SDK\ABP_Base_TPP_classes.hpp" />

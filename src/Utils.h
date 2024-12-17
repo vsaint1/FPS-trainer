@@ -7,6 +7,7 @@
 #include <shlobj.h>
 #include <sstream>
 #include <thread>
+#include <unordered_set>
 
 #if _DEBUG
 #include <stdio.h>
@@ -75,6 +76,10 @@ inline std::wstring ToWString(const std::string &str) {
   std::wstring wStr(str.begin(), str.end());
 
   return wStr;
+}
+
+inline SDK::FName ToFName(const wchar_t *str) {
+  return SDK::UKismetStringLibrary::Conv_StringToName(SDK::FString(str));
 }
 
 inline DWORD GetProcessId() {
