@@ -14,6 +14,7 @@
 #include "../gui/ZeroGUI.h"
 #include "esp/Esp.h"
 #include "esp/chams.h"
+#include "exploits/Exploits.h"
 
 namespace Cheat {
 

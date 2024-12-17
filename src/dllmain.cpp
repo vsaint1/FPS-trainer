@@ -1,5 +1,7 @@
 
 #include "cheat/Cheat.h"
+#include "game/SDK/BP_Bullet_classes.hpp"
+#include "game/SDK/CS_FireWeapon_classes.hpp"
 #include "gui/Menu.h"
 #include "hooks/Hooks.h"
 
@@ -50,6 +52,103 @@ if (!actor->IsA(SDK::ABP_ConquestCapturePoint_C::StaticClass()))
   }
 }
 
+void ProcessEventHooked(SDK::UObject *object, SDK::UFunction *func,
+                        void *params) {
+
+  // U_LOG("Called from %s, function %s %p", object->GetName().c_str(),
+  //       func->GetName().c_str(), params);
+
+  auto funcName = func->GetName();
+
+  if (Config::Exploit::bMagicBullet) {
+
+    if (object->GetName().find("BP_Bullet") != std::string::npos) {
+      U_LOG("Called from %s, function %s %p", object->GetName().c_str(),
+            func->GetName().c_str(), params);
+
+      auto *bullet = static_cast<SDK::ABP_Bullet_C *>(object);
+
+      if (bullet) {
+
+        if (G::pLevel != nullptr && G::pLocalPlayer != nullptr &&
+            G::pLocalPlayer->AcknowledgedPawn != nullptr &&
+            G::pActors != nullptr) {
+
+          SDK::TArray<SDK::AActor *> actors = *G::pActors;
+
+          for (int i = 0; i < actors.Num(); i++) {
+
+            if (!G::pLocalPlayer)
+              continue;
+
+            auto *actor = actors[i];
+
+            if (!actor || !actor->RootComponent)
+              continue;
+
+            if (actor->IsA(SDK::ABP_PlayerCharacter_C::StaticClass())) {
+
+              SDK::ABP_PlayerCharacter_C *playerCharacter =
+                  static_cast<SDK::ABP_PlayerCharacter_C *>(actor);
+
+              if (!playerCharacter)
+                continue;
+
+              if (!playerCharacter->Controller)
+                continue;
+
+              if (playerCharacter->Controller->Pawn == G::pLocalPlayer->Pawn)
+                continue;
+
+              auto playerState = static_cast<SDK::ABP_PlayerState_C *>(
+                  playerCharacter->PlayerState);
+
+              if (!playerState)
+                continue;
+
+              if (playerState->Team == G::localPlayerTeam &&
+                  !Config::Visual::Player::bTeam)
+                continue;
+
+              auto actorPos = actor->RootComponent->RelativeLocation;
+
+              if (actorPos.IsZero())
+                continue;
+
+              auto mesh = playerCharacter->Mesh;
+
+              if (!mesh)
+                continue;
+
+              auto headPos = mesh->GetSocketLocation(Utils::ToFName(L"Head"));
+
+              if (headPos.IsZero())
+                continue;
+
+              bullet->StartLocation = {headPos.X, headPos.Y, headPos.Z};
+
+              /* U_LOG("Damage %f, StartLocation (%f,%f,%f), Velocity %f",
+                     bullet->Damage, bullet->StartLocation.X,
+                     bullet->StartLocation.Y, bullet->StartLocation.Z,
+                     bullet->Velocity);*/
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // if (object->GetName().find("CS_FireWeapon") != std::string::npos) {
+  //   U_LOG("Called from %s, function %s %p", object->GetName().c_str(),
+  //         func->GetName().c_str(), params);
+  // }
+
+  if (Defines::originalProcessEventFn) {
+
+    Defines::originalProcessEventFn(object, func, params);
+  }
+}
+
 static unsigned long FakEntry(HMODULE hModule) {
 
   AllocConsole();
@@ -78,49 +177,24 @@ static unsigned long FakEntry(HMODULE hModule) {
 
   void **viewportVtable = *reinterpret_cast<void ***>(viewport);
 
+  void **vtable =
+      *reinterpret_cast<void ***>(moduleBase + G::Offsets::PE_OFFSET);
+
   Defines::originalPostRenderFn =
       reinterpret_cast<decltype(Defines::originalPostRenderFn)>(
           Memory::VMT_Hook(viewportVtable, G::Offsets::PR_IDX_OFFSET,
                            &PostRenderHooked));
 
+  Chams::CreateMaterial(pWorld, "Material WireframeMaterial.WireframeMaterial");
+
+  Hooks::Setup();
+
   U_LOG("[%p] GWorld", UWorld);
-  U_LOG("[%p] UGameViewportClient->DrawTransition()",
-        Defines::originalPostRenderFn);
+  U_LOG("[%p] DrawTransition", Defines::originalPostRenderFn);
 
-  Chams::wireFrameMaterial = SDK::UObject::FindObject<SDK::UMaterial>(
-      "Material WireframeMaterial.WireframeMaterial");
-
-  if (Chams::wireFrameMaterial) {
-
-    Chams::wireFrameMaterial->bDisableDepthTest = 1;
-    Chams::wireFrameMaterial->Wireframe = 1;
-    Chams::wireFrameMaterial->BlendMode = SDK::EBlendMode::BLEND_Additive;
-    Chams::wireFrameMaterial->MaterialDomain = SDK::EMaterialDomain::MD_Surface;
-    Chams::wireFrameMaterial->AllowTranslucentCustomDepthWrites = 1;
-    Chams::wireFrameMaterial->bIsBlendable = 1;
-    Chams::wireFrameMaterial->LightmassSettings.EmissiveBoost = 1.0f;
-    Chams::wireFrameMaterial->LightmassSettings.DiffuseBoost = 0;
-  }
-
-  Chams::chamsMaterial =
-      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
-          pWorld, Chams::wireFrameMaterial, Utils::ToFName(L"ChamsMaterial"),
-          SDK::EMIDCreationFlags::Transient);
-
-  Chams::chamsVisibleMaterial =
-      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
-          pWorld, Chams::wireFrameMaterial,
-          Utils::ToFName(L"ChamsVisibleMaterial"),
-          SDK::EMIDCreationFlags::Transient);
-
-  Chams::chamsOccludedMaterial =
-      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
-          pWorld, Chams::wireFrameMaterial,
-          Utils::ToFName(L"ChamsOccludedMaterial"),
-          SDK::EMIDCreationFlags::Transient);
+  U_LOG("[%p] ProcessEvent", Defines::originalProcessEventFn);
 
   while (!GetAsyncKeyState(VK_END)) {
-
     G::pWorld = SDK::UWorld::GetWorld();
 
     if (G::pWorld == nullptr)
@@ -144,6 +218,8 @@ static unsigned long FakEntry(HMODULE hModule) {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+
+  Hooks::Shutdown();
 
   viewportVtable[G::Offsets::PR_IDX_OFFSET] = Defines::originalPostRenderFn;
   Defines::originalPostRenderFn = nullptr;

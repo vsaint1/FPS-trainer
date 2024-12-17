@@ -111,6 +111,7 @@ void Update() {
       ZeroGUI::Checkbox("No Recoil", &Config::Exploit::bNoRecoil);
       ZeroGUI::Checkbox("One Hit Kill", &Config::Exploit::bOneHitKill);
       ZeroGUI::Checkbox("Rapid Fire", &Config::Exploit::bRapidFire);
+      ZeroGUI::Checkbox("Magic Bullet", &Config::Exploit::bMagicBullet);
       ZeroGUI::Checkbox("Speed Hack", &Config::Exploit::bSpeedHack);
     }
 

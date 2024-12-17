@@ -11,6 +11,8 @@ inline  SDK::UMaterialInstanceDynamic *chamsMaterial = nullptr;
 inline  SDK::UMaterialInstanceDynamic *chamsVisibleMaterial = nullptr;
 inline SDK::UMaterialInstanceDynamic *chamsOccludedMaterial = nullptr;
 
+void CreateMaterial(SDK::UWorld* world,const char* materialName);
+
 void ApplyChams(SDK::USkeletalMeshComponent *mesh,
                 SDK::UMaterialInstanceDynamic *materialDyn,
                 SDK::FLinearColor visibleColor, SDK::FLinearColor occludedColor,

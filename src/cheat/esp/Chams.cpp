@@ -2,6 +2,39 @@
 
 namespace Chams {
 
+void CreateMaterial(SDK::UWorld *world, const char *materialName) {
+  Chams::wireFrameMaterial =
+      SDK::UObject::FindObject<SDK::UMaterial>(materialName);
+
+  if (Chams::wireFrameMaterial) {
+    Chams::wireFrameMaterial->bDisableDepthTest = 1;
+    Chams::wireFrameMaterial->Wireframe = 1;
+    Chams::wireFrameMaterial->BlendMode = SDK::EBlendMode::BLEND_Additive;
+    Chams::wireFrameMaterial->MaterialDomain = SDK::EMaterialDomain::MD_Surface;
+    Chams::wireFrameMaterial->AllowTranslucentCustomDepthWrites = 1;
+    Chams::wireFrameMaterial->bIsBlendable = 1;
+    Chams::wireFrameMaterial->LightmassSettings.EmissiveBoost = 1.0f;
+    Chams::wireFrameMaterial->LightmassSettings.DiffuseBoost = 0;
+  }
+
+  Chams::chamsMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          world, Chams::wireFrameMaterial, Utils::ToFName(L"ChamsMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+
+  Chams::chamsVisibleMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          world, Chams::wireFrameMaterial,
+          Utils::ToFName(L"ChamsVisibleMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+
+  Chams::chamsOccludedMaterial =
+      SDK::UKismetMaterialLibrary::CreateDynamicMaterialInstance(
+          world, Chams::wireFrameMaterial,
+          Utils::ToFName(L"ChamsOccludedMaterial"),
+          SDK::EMIDCreationFlags::Transient);
+}
+
 void ApplyChams(SDK::USkeletalMeshComponent *mesh,
                 SDK::UMaterialInstanceDynamic *materialDyn,
                 SDK::FLinearColor visibleColor, SDK::FLinearColor occludedColor,
