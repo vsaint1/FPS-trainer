@@ -84,8 +84,13 @@ void Update() {
       ZeroGUI::Checkbox("Enabled", &Config::Visual::Player::bChamsEnabled);
       ZeroGUI::Checkbox("Player Chams", &Config::Visual::Player::bPlayerChams);
       ZeroGUI::Checkbox("Weapon Chams", &Config::Visual::Player::bWeaponChams);
-      //ZeroGUI::Checkbox("Grenade Chams", &Config::Visual::Player::bSkeleton);
 
+      ZeroGUI::NextColumn(430.f);
+      ZeroGUI::Text("World", false, true);
+      ZeroGUI::Checkbox("Enabled", &Config::Visual::World::bEnabled);
+      ZeroGUI::Checkbox("Grenades", &Config::Visual::World::bGrenades);
+      ZeroGUI::Checkbox("Weapons", &Config::Visual::World::bPickups);
+      ZeroGUI::Checkbox("Conquest", &Config::Visual::World::bMap);
     }
 
     ZeroGUI::NextColumn(130.0f);

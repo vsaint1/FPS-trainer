@@ -8,6 +8,7 @@
 #include <sstream>
 #include <thread>
 #include <unordered_set>
+#include <regex>
 
 #if _DEBUG
 #include <stdio.h>

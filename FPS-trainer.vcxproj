@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cheat\Cheat.cpp" />
     <ClCompile Include="src\cheat\esp\Chams.cpp" />
     <ClCompile Include="src\cheat\esp\Esp.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
@@ -343,6 +344,7 @@
     <ClCompile Include="src\mem\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cheat\Cheat.h" />
     <ClInclude Include="src\cheat\esp\Chams.h" />
     <ClInclude Include="src\cheat\esp\Esp.h" />
     <ClInclude Include="src\game\PropertyFixup.hpp" />

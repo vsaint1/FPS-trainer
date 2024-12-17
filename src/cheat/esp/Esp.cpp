@@ -72,7 +72,7 @@ void DrawDistance(const SDK::FString &distance, SDK::UCanvas *canvas,
     return;
 
   canvas->K2_DrawText(pFont, distance, pos2D, {0.8f, 0.8f},
-                      {1.0f, 1.0f, 1.0f, 0.8f}, 0.0f, {1.0f, 1.0f}, {200, 200},
+                      {0.8f, 0.7f, 0.0f, 0.8f}, 0.0f, {1.0f, 1.0f}, {200, 200},
                       true, true, true, {0.0f, 0.0f, 0.0f, 0.5f});
 }
 void DrawBoxCorner(SDK::UCanvas *canvas, SDK::FVector2D pos2D, float boxWidth,

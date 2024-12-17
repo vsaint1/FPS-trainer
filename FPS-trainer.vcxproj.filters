@@ -591,6 +591,9 @@
     <ClCompile Include="src\cheat\esp\Chams.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cheat\Cheat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils.h">
@@ -2394,6 +2397,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cheat\esp\Chams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cheat\Cheat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

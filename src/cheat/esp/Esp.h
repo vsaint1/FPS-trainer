@@ -1,7 +1,8 @@
 #pragma once
 #include "../../Globals.h"
-#include "../../Utils.h"
 #include "../../Settings.h"
+#include "../../Utils.h"
+
 
 namespace Esp {
 inline std::unordered_map<std::int32_t, SDK::FName> boneMap;

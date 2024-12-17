@@ -15,6 +15,12 @@ inline bool bSpeedHack = false;
 inline bool bMagicBullet = false;
 }; // namespace Exploit
 namespace Visual {
+namespace World {
+inline bool bEnabled = false;
+inline bool bGrenades = false;
+inline bool bMap = false;
+inline bool bPickups = false;
+}; // namespace World
 namespace Player {
 inline bool bEnabled = false;
 inline bool bBox = false;
